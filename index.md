@@ -3,13 +3,13 @@ layout: page
 title: Unicode and UTF codepages explanation  
 ---
 
-# Here you can find information about №:
+Here you can find information about:
 
 - Unicode standart
 - UTF-8 and UTF-16 codepages
 - Difference between this codepages, their pros and cons
 
-# Documents listed below #:
+Documents listed below:
 
 - [English version](pages/english.html)
 - [Русская версия документации](pages/russian.html)
@@ -18,6 +18,7 @@ title: Unicode and UTF codepages explanation
 
 ---
 
-# You can contact me #:  
+You can contact me:  
+
 My email:   
 My phone:   
