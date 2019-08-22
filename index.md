@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Unicode and UTF codepages explanation
+title: Unicode and UTF codepages explanation  
 tagline: This site contains explanation document for Unicode standart. It also contains UTF-8 and UTF-16 information.
 description: Minimal tutorial on making a simple website with GitHub Pages
 ---
