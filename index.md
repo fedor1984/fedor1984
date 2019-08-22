@@ -18,6 +18,6 @@ Documents listed below:
 
 ---
 
-You can contact me:
-My email: 
-My phone: 
+You can contact me:  
+My email:   
+My phone:   
