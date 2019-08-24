@@ -106,7 +106,6 @@ First you need to find out how many bytes are needed to encode the character. Th
 
 
 |Code point range |Required number of bytes|
-
 |-----------------|------------------------|
 |00000000-0000007F|1                       |
 |00000080-000007FF|2                       |
