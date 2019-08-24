@@ -87,15 +87,17 @@ Code point: U + 0045
 Hexadecimal number: 45
 Decimal number: 69 (serial number in the Unicode table)
 
-UTF-8: 01000101
-UTF-16: 00000000 01000101
+UTF-8:                             01000101
+UTF-16:                   00000000 01000101
 UTF-32: 00000000 00000000 00000000 01000101
 ```
 
-It is easy to see that only one working byte is required to encode a code point from the BMP. In the UTF-16 and UTF-32 encodings, all bytes except the first one are occupied by zeros and do not make sense. Why do we need all this “heavy” encodings, if there is UTF-8? A detailed explanation of this will be given below.
+It is easy to see that only one working byte is required to encode a code point from the BMP. In the UTF-16 and UTF-32 encodings, all bytes except the first one are occupied by zeros and do not make sense. Why do we need all this “heavy” encodings, if there is UTF-8? 
+
+A detailed explanation of this will be given below.
 
 
-UTF-8. Coding algorithm.
+### UTF-8. Coding algorithm.
 
 UTF-8 is the most common coding in web space. This encoding uses 1 to 4 bytes to represent a character, and is fully ASCII compatible. UTF-8 is widely used on UNIX-like systems.
 
@@ -103,16 +105,13 @@ The encoding algorithm in UTF-8 is divided into several stages.
 First you need to find out how many bytes are needed to encode the character. The correspondence table is used for this:
 
 
-Code point range
-Required number of bytes
-00000000-0000007F
-1
-00000080-000007FF
-2
-00000800-0000FFFF
-3
-00010000-0010FFFF
-4
+|Code point range |Required number of bytes|
+|-----------------|------------------------|
+|00000000-0000007F|1                       |
+|00000080-000007FF|2                       |
+|00000800-0000FFFF|3                       |
+|00010000-0010FFFF|4                       |
+
 
 As we already explained above, only one byte is required for the Latin letter E, because this code point is located in BMP. 
 
@@ -120,10 +119,12 @@ For the “tick ✓” symbol, 3 bytes are required already, as it lies in the t
 
 Next, you need to set the higher bits of the first byte to the corresponding value:
 
-0xxxxxxx -is required for encoding one byte;
-110xxxxx -required for encoding two bytes are;
-1110xxxx -required for encoding three bytes are;
-11110xxx —required for encoding Four bytes are.
+|Higher bits|Number of bytes for encoding|
+|-----------|----------------------------|
+|0xxxxxxx  |1                           |
+|110xxxxx  |2                           |
+|1110xxxx  |3                           |
+|11110xxx  |4                           |
 
 It is also necessary to determine the most significant bits in the intermediate bytes (2-4). If more than two bytes are required for encoding, the first two bits in bytes 2-4 always take the value 10xxxxxxx.
 
