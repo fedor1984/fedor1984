@@ -129,21 +129,12 @@ Next, you need to set the higher bits of the first byte to the corresponding val
 It is also necessary to determine the most significant bits in the intermediate bytes (2-4). If more than two bytes are required for encoding, the first two bits in bytes 2-4 always take the value 10xxxxxxx.
 
 
-Number of Bytes of
-Significant Bits
-Pattern
-1
-7
-0xxxxxxx
-2
-11
-110xxxxx 10xxxxxx
-3
-16
-1110xxxx 10xxxxxx 10xxxxxx
-4
-21
-11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+|Number of Bytes| Significant Bits| Pattern|
+|---------------|-----------------|--------|
+|1              |7                |0xxxxxxx|
+|2              |11               |110xxxxx 10xxxxxx|
+|3              |16               |1110xxxx 10xxxxxx 10xxxxxx|
+|4              |21               |11110xxx 10xxxxxx 10xxxxxx 10xxxxxx|
 
 
 Thus, we found out that for the “tick” symbol the first byte will be equal to 1110xxxx. The second and third bytes will begin with 10xxxxxx.
@@ -151,17 +142,17 @@ Thus, we found out that for the “tick” symbol the first byte will be equal t
 The final step in character encoding will be to set the significant bits to match Unicode characters. You need to start filling with the least significant bits of the character number, putting them in the least significant bits of the last byte, and then continue from right to left until the first byte. The free bits of the first byte are filled with zeros.
 
 As a result, we got a binary representation for the tick symbol. These are 3 bytes:
-
+```
 11100010 10011100 10010011
-
+```
 We figured out a way to represent code points in UTF-8 encoding. Below we consider working with the UTF-16 encoding.
 
-UTF-16. Coding algorithm.
+### UTF-16. Coding algorithm.
 
-UTF-16 is a character encoding method in which characters are encoded by a set of double-byte words. The range of values ​​from U + 0000 to U + FFFF is written in two bytes. For example, the Latin letter E will be written like this:
-
+UTF-16 is a character encoding method in which characters are encoded by a set of double-byte words. The range of values from U+ 0000 to U+ FFFF is written in two bytes. For example, the Latin letter E will be written like this:
+```
 U+ 0045 	00000000 01000101
-
+```
 Note that the first byte is completely filled by zeros.
 
 With two bytes, only 65535 code points can be represented. However, we know that there are significantly more characters in Unicode. For the representation of code points in a range greater than U + FFFF, 4 bytes are already used. The encoding of these bytes occurs using “surrogate pairs”. 
