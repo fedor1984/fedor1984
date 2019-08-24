@@ -1,203 +1,241 @@
 ---
 layout: page
-title: Making an independent website
-description: How to make an independent website with GitHub Pages.
+title: Unicode and UTF encodings explanation
 ---
 
-This is what to do if you just want a website. (This page is a bit
-long, but it's really not that much work.)
+### Contents
 
-### First things
+- Purpose of the document.
+- Coding history. ASCII.
+- The history of Unicode creation. UCS and UTF.
+- Basic coding principles in Unicode.
+- Translation of a character into machine code. Definition of coding.
+- UTF-8. Coding algorithm.
+- UTF-16. Coding algorithm.
+- Byte order. Unicode byte order marker.
+- General information about UTF-32.
+- Comparison of UTF-8 and UTF-16. Findings.
 
-Start by cloning
-[the repository for the present site](https://github.com/kbroman/simple_site). (Or,
-alternatively, fork it and then clone your own version.)
+### Purpose of the document
 
-    git clone git://github.com/kbroman/simple_site
+After reading the document, the reader should have a clear understanding of the Unicode character encoding standard, and also know how Unicode characters are translated into machine code. Also, this document will describe the encoding principles in UTF-8 and UTF-16, briefly UTF-32, the main differences between the encodings, the pros and cons of each.
 
-Then change the name of that directory to something meaningful.
+The document is designed for technical specialists with an understanding of binary and hexadecimal number systems.
 
-    mv simple_site something_meaningful
+### Coding history. ASCII.
 
-(Of course, don't use `something_meaningful` but rather
-_something meaningful_.)
+Coding is the presentation of an informational message in the form of a code. The simplest coding method, known since ancient times, is a signal fire. 
 
-Now change into that directory and remove the `.git` directory
-(because you don't want the history of _my_ repository).
+The first tool that can convey the alphabet and punctuation is Samuel Morse code. The term “code table” appears in the Morse code. This is a table of correspondence between symbols and their codes. 
 
-    cd something_meaningful
-    rm -r .git
+The evolution of Morse code is the Bodo code. 5 pulses were used to transmit each character. In fact, the Bodo code is the world's first binary information coding system. The size of each character was fixed at 5 bits.
 
-Now make it a git repository again.
+In 1936, the United States created the ASCII (American Standart Code for Information Interchange) coding table. ASCII is a table of correspondence of characters to their codes, size 8 by 16 cells.
 
-    git init
+The ASCII table, with the exception of Latin letters and punctuation, contains control characters, such as the beginning of the text (SOT), line feed (LF), the end of the transmission (EOT), and others - total 33 characters. 
 
-### Things not to change
+In ASCII, the story of the development of coding could end if humanity spoke only English and did not use symbols like ¿- “Inverted Question Mark”. However, we know that there are thousands of languages ​​in the world, and many special characters. Came up a logical idea - to combine all existing alphabets and all special characters into one table. 
 
-You'll need to keep the following files and directories largely unchanged.
+So the Unicode standard appeared.
 
-    Rakefile
-    _includes
-    _layouts
-    _plugins
-    assets/themes
+### The history of Unicode creation. UCS and UTF.
 
-We _will_ change one file within `_includes/`; see below.
+Unicode is a character encoding standard that includes almost all the written languages ​​of the world. The standard was proposed by the Unicode Consortium (Unicode Inc.) in 1991. 
 
-### Edit the `_config.yml` file
+The standard consists of two parts: Universal Character Set, UCS, and Universal Transformation Format, UTF - a set of encodings.
 
-The
-[`_config.yml`](https://github.com/kbroman/simple_site/blob/gh-pages/_config.yml)
-file contains a bunch of configuration information. You'll want to
-edit this file to replace my information with your information.
+In simple terms, UCS is a table where each character has its own hexadecimal code, prefixed with U+. 
 
-Perhaps edit the
-[line with `exclude:`](https://github.com/kbroman/simple_site/blob/gh-pages/_config.yml#L5)
-if you've named `License.md` and/or `ReadMe.md` differently. (I've
-edited this line a bit, here.)
+UTF is an algorithm for translating the hexadecimal code of UCS to binary. In other words, this is a translation of the intermediate U+ code into binary language that the computer understands.
 
-    exclude: [..., "ReadMe.md", "Rakefile", "License.md"]
+### Basic coding principles in Unicode. 
 
-Edit the
-[lines about the site name and author](https://github.com/kbroman/simple_site/blob/gh-pages/_config.yml#L11-L17).
+Symbols in Unicode have a specific name - “code point”. For example, the Latin letter E will be represented by the code point U+ 0045. It is worth noting that the lowercase letter “e”, as well as the Cyrillic characters “Е” and “е” will have their own codes in the table - despite the same letter inscription.
 
-    title : simple site
-    author :
-      name : Karl Broman
-      email : kbroman@gmail.com
-      github : kbroman
-      twitter : kwbroman
-      feedburner : nil
+Each code point also has additional characteristics, such as:
 
-Edit the
-[`production_url` line](https://github.com/kbroman/simple_site/blob/gh-pages/_config.yml#L19)
-by replacing `kbroman` with _your_ github user name, and replace
-`simple_site` with the name that your repository will have on github
-(`something_meaningful`?).
+- HTML and CSS word codes.
+- The section of the Unicode table in which the code point is located.
+- Name in Unicode (E - Latin Capital Letter E).
 
-    production_url : https://kbroman.github.io/simple_site
+All code points form a set called “code space”. This space consists of 1,114,112 code points, of which 128,237 are occupied - that is only 12%. 
 
-Note that the `https` (vs `http`) is important here; see
-&ldquo;[Securing your github pages site with https](https://help.github.com/articles/securing-your-github-pages-site-with-https/).&rdquo;
-(I need to use `http` because my site uses the custom domain
-`kbroman.org`, but you likely need `https`.)
+Below is a map of the Unicode code space. Each small field (square) of the card contains 16 * 16 = 256 code points. In turn of, each large field contains 65536 code points. The total number of large fields is 17. Unicode also reserves “private points” - fields for the internal needs of applications.
 
-Replace the
-[`BASE_PATH` line](https://github.com/kbroman/simple_site/blob/gh-pages/_config.yml#L52)
-with the same url.
+Figure 1. Unicode code points location map.
 
-    BASE_PATH : https://kbroman.github.io/simple_site
+Blue points in the table indicate already defined points, green - private code points. The largest space is the free fields, they are marked white.
 
-There's also an
-[`ASSET_PATH` line](https://github.com/kbroman/simple_site/blob/gh-pages/_config.yml#L62),
-but you can leave that commented-out (with the `#` symbol at the beginning).
+The first large field (upper left square) is used most often. It is called the “Basic Multilingual Plane (BMP)”, and contains almost all the characters that are used in modern texts. BMP includes Latin letters, Korean, Japanese and Chinese alphabets, Cyrillic, and other languages. It is easy to guess that the BMP is used most often. 
 
-Note that for the `BASE_PATH`, I actually have
-`https://kbroman.org/` in place of `https://kbroman.github.io/`. I set up
-a
-[custom domain](https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages),
-which involved a series of emails with a DNS provider. I
-don't totally understand how it works, and I'm not _entirely_ sure
-that I've done it right. But if you want to have a custom domain, take
-a look at
-[that GitHub help page](https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages).
+The second field contains more specific languages, for example, Egyptian hieroglyphs, as well as emoji. The third field contains rare Chinese characters. 
 
-### Edit `_includes/themes/twitter/default.html`
+Figure 2. Main Unicode fields.
 
-The
-[`_includes/themes/twitter/default.html`](https://github.com/kbroman/simple_site/blob/gh-pages/_includes/themes/twitter/default.html)
-file defines how a basic page will look on your site. In particular,
-it contains a bit of html code for a footer, if you want one.
+### Translation of a character into machine code. Definition of coding.
 
-Find the
-[footer for my site](https://github.com/kbroman/simple_site/blob/gh-pages/_includes/themes/twitter/default.html#L47-L50)
-and remove it or edit it to suit. This is the only bit of html you'll
-have to deal with.
+We found that each character in Unicode is represented by a code word in the range U + 0000 - U + 10FFFF. Our next task is to understand how the hexadecimal code is translated into a binary, understandable to the computer. UTF encoding formats are used for this conversion. They are also called “encodings”.
 
-    <!-- start of Karl's footer; modify this part -->
-        <a href="https://creativecommons.org/publicdomain/zero/1.0/">  ...
-        <a href="https://kbroman.org">Karl Broman</a>
-    <!-- end of Karl's footer; modify this part -->
+To represent the code point in binary form, we can use 1, 2 or 4 bytes (8, 16, and 32 bits, respectively). This is a simplified definition of the encodings UTF-8, UTF-16, UTF-32.
 
-### Edit or remove the Markdown files
+It should be noted that in Unicode is used a Byte Order Marker (abbreviated as BOM) - special character inserted at the beginning of the text stream, indicating that the file (stream) uses Unicode. BOM is also used to specify the encoding and byte order of characters.
 
-Edit the
-[`index.md`](https://raw.githubusercontent.com/kbroman/simple_site/gh-pages/index.md)
-file, which will become the main page for your site.
+Consider the different encodings using the example of the Latin letter E:
 
-First, edit the initial chunk with a different title and tagline. Feel
-free to just delete the tagline.
+```
+Code point: U + 0045
+Hexadecimal number: 45
+Decimal number: 69 (serial number in the Unicode table)
 
-    ---
-    layout: page
-    title: simple site
-    tagline: Easy websites with GitHub Pages
-    ---
+UTF-8: 01000101
+UTF-16: 00000000 01000101
+UTF-32: 00000000 00000000 00000000 01000101
+```
 
-Now edit the rest (or, for now, just remove) the rest of the file.
+It is easy to see that only one working byte is required to encode a code point from the BMP. In the UTF-16 and UTF-32 encodings, all bytes except the first one are occupied by zeros and do not make sense. Why do we need all this “heavy” encodings, if there is UTF-8? A detailed explanation of this will be given below.
 
-Now go into the [`pages/`](https://github.com/kbroman/simple_site/blob/gh-pages/pages) directory and remove or rename and modify
-all of the Markdown files in there
 
-Note that when you link to any of these Markdown-based pages, you'll
-want to use a `.html` extension rather than `.md`. For example, look
-at the
-[main page](https://raw.githubusercontent.com/kbroman/simple_site/gh-pages/index.md)
-for this site; the links in the bullet points for the various pages
-look like this:
+UTF-8. Coding algorithm.
 
-    - [Overview](pages/overview.html)
-    - [Making an independent website](pages/independent_site.html)
-    - [Making a personal site](pages/user_site.html)
-    - [Making a site for a project](pages/project_site.html)
-    - [Making a jekyll-free site](pages/nojekyll.html)
-    - [Testing your site locally](pages/local_test.html)
-    - [Resources](pages/resources.html)
+UTF-8 is the most common coding in web space. This encoding uses 1 to 4 bytes to represent a character, and is fully ASCII compatible. UTF-8 is widely used on UNIX-like systems.
 
-### Commit all of these changes.
+The encoding algorithm in UTF-8 is divided into several stages.
+First you need to find out how many bytes are needed to encode the character. The correspondence table is used for this:
 
-At the start, we'd removed the `.git/` subdirectory (with the history
-of _my_ repository) and then used `git init` to make it a new git
-repository.
 
-Now you want to add and commit all of the files, as modified.
+Code point range
+Required number of bytes
+00000000-0000007F
+1
+00000080-000007FF
+2
+00000800-0000FFFF
+3
+00010000-0010FFFF
+4
 
-    git add .
-    git commit -m "Initial commit"
+As we already explained above, only one byte is required for the Latin letter E, because this code point is located in BMP. 
 
-Then change the name of the master branch to `gh-pages`.
+For the “tick ✓” symbol, 3 bytes are required already, as it lies in the third range.
 
-    git branch -m master gh-pages
+Next, you need to set the higher bits of the first byte to the corresponding value:
 
-### Push everything to GitHub
+0xxxxxxx -is required for encoding one byte;
+110xxxxx -required for encoding two bytes are;
+1110xxxx -required for encoding three bytes are;
+11110xxx —required for encoding Four bytes are.
 
-Now go back to GitHub and create a new repository, called something
-meaningful. (I'll again pretend that it's explicitly
-`something_meaningful`.)
+It is also necessary to determine the most significant bits in the intermediate bytes (2-4). If more than two bytes are required for encoding, the first two bits in bytes 2-4 always take the value 10xxxxxxx.
 
-Then go back to the command line and push your repository to
-[GitHub](https://github.com).
 
-    git remote add origin git@github.com:username/something_meaningful
+Number of Bytes of
+Significant Bits
+Pattern
+1
+7
+0xxxxxxx
+2
+11
+110xxxxx 10xxxxxx
+3
+16
+1110xxxx 10xxxxxx 10xxxxxx
+4
+21
+11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
 
-Replace `username` with your GitHub user name and
-`something_meaningful` with the name of your repository. And you might
-want to use the `https://` construction instead, if you're not using ssh.
 
-    git remote add origin https://github.com/username/something_meaningful
+Thus, we found out that for the “tick” symbol the first byte will be equal to 1110xxxx. The second and third bytes will begin with 10xxxxxx.
 
-Finally, push everything to GitHub.
+The final step in character encoding will be to set the significant bits to match Unicode characters. You need to start filling with the least significant bits of the character number, putting them in the least significant bits of the last byte, and then continue from right to left until the first byte. The free bits of the first byte are filled with zeros.
 
-    git push -u origin gh-pages
+As a result, we got a binary representation for the tick symbol. These are 3 bytes:
 
-Note that we're using `gh-pages` and not `master` here, as we want
-this stuff in a `gh-pages` branch.
+11100010 10011100 10010011
 
-### Check whether it worked
+We figured out a way to represent code points in UTF-8 encoding. Below we consider working with the UTF-16 encoding.
 
-Go to `https://username.github.io/something_meaningful` and cross your
-fingers that it worked. (Really, _I_ should be crossing my fingers.)
+UTF-16. Coding algorithm.
 
-### Up next
+UTF-16 is a character encoding method in which characters are encoded by a set of double-byte words. The range of values ​​from U + 0000 to U + FFFF is written in two bytes. For example, the Latin letter E will be written like this:
 
-Now go to [making a personal site](user_site.html).
+U+ 0045 	00000000 01000101
+
+Note that the first byte is completely filled by zeros.
+
+With two bytes, only 65535 code points can be represented. However, we know that there are significantly more characters in Unicode. For the representation of code points in a range greater than U + FFFF, 4 bytes are already used. The encoding of these bytes occurs using “surrogate pairs”. 
+
+A surrogate pair is a two-byte Unicode character that, in combination with another surrogate pair, gives a Unicode character in the range above U + FFFF. Surrogate pairs are can be “upper” and “lower” (“leading” and “trailing” in other words). 
+
+The range of the upper surrogate pairs: U+ 800 - U+ DBFF
+The range of the lower surrogate pairs: U+ DC00 - U+ DFFF
+
+Let's look at an example of how the coding of characters above U+ FFFF is made with surrogate pairs. To do this, we turn to the symbols of the book “Canon of Changes”, which was written in China around 700 BC.
+
+The 𝌡 symbol - a tetragram of changes, will be represented in UTF-16 as follows:
+
+D8 34 DF 21	11011000 00110100 11011111 00100001
+
+Here, the first two bytes are the upper surrogate pair U+ D834, while the second two bytes U+ DF21 are the lower surrogate pair.
+
+The U+ D834 and U+ DF21 characters themselves are not significant in Unicode. In other words, there is no letter or graphic representation for these characters. They are reserved specifically for the compilation of surrogate UTF-16 encoding pairs, and only work together.
+
+Consider also the “tick” symbol from the UTF-8 encoding section. In UTF-16, this symbol will be represented as follows:
+
+U+ 2713 	00100111 00010011
+ 
+Please note that the “tick” character in UTF-16 encoding only takes 2 bytes, while in UTF-8 it took 3 bytes to encode.
+
+In UTF-16 encoding, the byte order may be different. This order depends on the processor architecture, on which the data is processed. The symbol of changes 𝌡 can be represented in two versions:
+
+D8 34 DF 21	11011000 00110100 11011111 00100001
+34 D8 21 DF	00110100 11011000 00100001 11011111
+
+The first option is called Big Endian (BE), the second - Little Endian (LE). What these formats mean and how the processor distinguishes them will be discussed in the next chapter.
+
+Byte order. Unicode byte order marker.
+
+Different types of processors use different byte orders:
+
+Big Endian is the “high to low” byte order. It corresponds to the usual order of writing Arabic numbers - from left to right. This byte order is used in SPARC, Motorola, IBM processors, as well as in the TCP/IP protocol.
+
+The order of Little Endian, in turn, is “from low to high”. For example, the number 123 in this order would be written as 321. This byte order is used in family of x86 CPU-s, as well as in USB and PCI interfaces.
+
+The question arises - how does the processor determine which order of bytes to use to work with the information block? For this, a special character was introduced in Unicode - U+ FEFF. We already know it - this is a Byte Order Marker (BOM). 
+
+BOM for encoding UTF-16BE: 0xFE 0xFF
+BOM for encoding UTF-16LE: 0xFF 0xFE
+
+It should be noted that in Unicode there is no U+ FFFE character. This is done to uniquely determine BOM symbol, and therefore, byte order. 
+
+UTF-8 encoding does not use BOM to determine byte order. The standard implies adding a BOM to the beginning of a file encoded in UTF-8. This is necessary to unambiguously determine the fact that the file is UTF-8 encoded. Other encodings - UTF-16 and UTF-32 requires mandatory using BOM.
+
+General information about UTF-32.
+
+The Unicode standard can also be encoded in UTF-32. This encoding always uses 4 bytes to represent any Unicode character. In other words, even the “E” character from the BMP in UTF-32 will look like 00000000 00000000 00000000 01000101. 
+
+As you can see, in this example the first three bytes are “excess”. Hence the main disadvantage of the encoding is that the text on the computer disk will take up too much space. This is especially noticeable when working with BMP code points.
+
+The UTF-32 encoding must also have a BOM at the beginning of the text, and can be either Big Endian or Little Endian.
+
+Comparison of UTF-8 and UTF-16. Findings.
+
+Now we know the features of the UTF-8 and UTF-16 encodings, and we can make the following observations and conclusions:
+
+UTF-8 is ideal for working with the Latin alphabet and ASCII control characters, because only 1 byte is required to encode these characters. If your product contains Latin letters (even mixed with other languages), UTF-8 would be a great choice.
+
+In case if your product will work with Cyrillic, Greek and Hebrew, both encodings will use 2 bytes to represent the code point. If you plan to work mainly with Asian languages, the choice of UTF-16 will be preferable. You require only 2 bytes to write a character, instead of three in UTF-8.
+
+If your product is designed to work with Web, or on Unix systems, choosing UTF-8 will be preferable. In turn, Windows, Java, Python, C # use UTF-16 as the internal encoding.
+
+UTF-8 is independent of byte order. UTF-16 can have two byte order options, and it necessarily requires the use of BOM. In UTF-8, BOM is often not used at all.
+
+Computers mainly communicate in the ASCII range, and here UTF-8 has the full advantage.
+
+UTF-16 is better for presenting data in memory, as the byte order will not matter. Indexing by code points will be performed faster. 
+
+The code point in UTF-8 can contain from 1 to 4 bytes, which makes it difficult to manipulate the string (for example, calculating the number of characters in a string).
+
+UTF-8 is a self-synchronizing encoding. This means that if any byte in the string is damaged, only one character will be invalid. Rest of the string will be correctly presented.
+
+
