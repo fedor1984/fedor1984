@@ -113,6 +113,7 @@ First you need to find out how many bytes are needed to encode the character. Th
 |00010000-0010FFFF|4                       |
 
 
+
 As we already explained above, only one byte is required for the Latin letter E, because this code point is located in BMP. 
 
 For the “tick ✓” symbol, 3 bytes are required already, as it lies in the third range.
@@ -125,6 +126,7 @@ Next, you need to set the higher bits of the first byte to the corresponding val
 |110xxxxx  |2                           |
 |1110xxxx  |3                           |
 |11110xxx  |4                           |
+
 
 It is also necessary to determine the most significant bits in the intermediate bytes (2-4). If more than two bytes are required for encoding, the first two bits in bytes 2-4 always take the value 10xxxxxxx.
 
@@ -149,60 +151,62 @@ We figured out a way to represent code points in UTF-8 encoding. Below we consid
 
 ### UTF-16. Coding algorithm.
 
-UTF-16 is a character encoding method in which characters are encoded by a set of double-byte words. The range of values from U+ 0000 to U+ FFFF is written in two bytes. For example, the Latin letter E will be written like this:
+UTF-16 is a character encoding method in which characters are encoded by a set of double-byte words. The range of values from U+0000 to U+FFFF is written in two bytes. For example, the Latin letter E will be written like this:
 ```
-U+ 0045 	00000000 01000101
+U+0045 	00000000 01000101
 ```
 Note that the first byte is completely filled by zeros.
 
 With two bytes, only 65535 code points can be represented. However, we know that there are significantly more characters in Unicode. For the representation of code points in a range greater than U + FFFF, 4 bytes are already used. The encoding of these bytes occurs using “surrogate pairs”. 
 
 A surrogate pair is a two-byte Unicode character that, in combination with another surrogate pair, gives a Unicode character in the range above U + FFFF. Surrogate pairs are can be “upper” and “lower” (“leading” and “trailing” in other words). 
-
-The range of the upper surrogate pairs: U+ 800 - U+ DBFF
-The range of the lower surrogate pairs: U+ DC00 - U+ DFFF
-
-Let's look at an example of how the coding of characters above U+ FFFF is made with surrogate pairs. To do this, we turn to the symbols of the book “Canon of Changes”, which was written in China around 700 BC.
+```
+The range of the upper surrogate pairs: U+800 - U+DBFF
+The range of the lower surrogate pairs: U+DC00 - U+DFFF
+```
+Let's look at an example of how the coding of characters above U+FFFF is made with surrogate pairs. To do this, we turn to the symbols of the book “Canon of Changes”, which was written in China around 700 BC.
 
 The 𝌡 symbol - a tetragram of changes, will be represented in UTF-16 as follows:
-
+```
 D8 34 DF 21	11011000 00110100 11011111 00100001
+```
+Here, the first two bytes are the upper surrogate pair U+D834, while the second two bytes U+DF21 are the lower surrogate pair.
 
-Here, the first two bytes are the upper surrogate pair U+ D834, while the second two bytes U+ DF21 are the lower surrogate pair.
-
-The U+ D834 and U+ DF21 characters themselves are not significant in Unicode. In other words, there is no letter or graphic representation for these characters. They are reserved specifically for the compilation of surrogate UTF-16 encoding pairs, and only work together.
+The U+D834 and U+DF21 characters themselves are not significant in Unicode. In other words, there is no letter or graphic representation for these characters. They are reserved specifically for the compilation of surrogate UTF-16 encoding pairs, and only work together.
 
 Consider also the “tick” symbol from the UTF-8 encoding section. In UTF-16, this symbol will be represented as follows:
-
-U+ 2713 	00100111 00010011
- 
+```
+U+2713 	00100111 00010011
+```
 Please note that the “tick” character in UTF-16 encoding only takes 2 bytes, while in UTF-8 it took 3 bytes to encode.
 
 In UTF-16 encoding, the byte order may be different. This order depends on the processor architecture, on which the data is processed. The symbol of changes 𝌡 can be represented in two versions:
-
+```
 D8 34 DF 21	11011000 00110100 11011111 00100001
 34 D8 21 DF	00110100 11011000 00100001 11011111
-
+```
 The first option is called Big Endian (BE), the second - Little Endian (LE). What these formats mean and how the processor distinguishes them will be discussed in the next chapter.
 
-Byte order. Unicode byte order marker.
+### Byte order. Unicode byte order marker.
 
-Different types of processors use different byte orders:
+Different types of processors use different byte orders.
 
 Big Endian is the “high to low” byte order. It corresponds to the usual order of writing Arabic numbers - from left to right. This byte order is used in SPARC, Motorola, IBM processors, as well as in the TCP/IP protocol.
 
-The order of Little Endian, in turn, is “from low to high”. For example, the number 123 in this order would be written as 321. This byte order is used in family of x86 CPU-s, as well as in USB and PCI interfaces.
+The order of Little Endian, in turn, is “from low to high”. For example, the number 123 in this order would be written as 321. This byte order is used in x86 CPU-s family, as well as in USB and PCI interfaces.
 
-The question arises - how does the processor determine which order of bytes to use to work with the information block? For this, a special character was introduced in Unicode - U+ FEFF. We already know it - this is a Byte Order Marker (BOM). 
+The question arises - how does the processor determine which order of bytes to use to work with the information block? For this, a special character was introduced in Unicode - U+FEFF. 
 
+We already know it - this is a Byte Order Marker (BOM). 
+```
 BOM for encoding UTF-16BE: 0xFE 0xFF
 BOM for encoding UTF-16LE: 0xFF 0xFE
-
-It should be noted that in Unicode there is no U+ FFFE character. This is done to uniquely determine BOM symbol, and therefore, byte order. 
+```
+It should be noted that in Unicode there is no U+FFFE character. This is done to uniquely determine BOM symbol, and therefore, byte order. 
 
 UTF-8 encoding does not use BOM to determine byte order. The standard implies adding a BOM to the beginning of a file encoded in UTF-8. This is necessary to unambiguously determine the fact that the file is UTF-8 encoded. Other encodings - UTF-16 and UTF-32 requires mandatory using BOM.
 
-General information about UTF-32.
+### General information about UTF-32.
 
 The Unicode standard can also be encoded in UTF-32. This encoding always uses 4 bytes to represent any Unicode character. In other words, even the “E” character from the BMP in UTF-32 will look like 00000000 00000000 00000000 01000101. 
 
@@ -210,24 +214,24 @@ As you can see, in this example the first three bytes are “excess”. Hence th
 
 The UTF-32 encoding must also have a BOM at the beginning of the text, and can be either Big Endian or Little Endian.
 
-Comparison of UTF-8 and UTF-16. Findings.
+### Comparison of UTF-8 and UTF-16. Findings.
 
 Now we know the features of the UTF-8 and UTF-16 encodings, and we can make the following observations and conclusions:
 
-UTF-8 is ideal for working with the Latin alphabet and ASCII control characters, because only 1 byte is required to encode these characters. If your product contains Latin letters (even mixed with other languages), UTF-8 would be a great choice.
+- UTF-8 is ideal for working with the Latin alphabet and ASCII control characters, because only 1 byte is required to encode these characters. If your product contains Latin letters (even mixed with other languages), UTF-8 would be a great choice.
 
-In case if your product will work with Cyrillic, Greek and Hebrew, both encodings will use 2 bytes to represent the code point. If you plan to work mainly with Asian languages, the choice of UTF-16 will be preferable. You require only 2 bytes to write a character, instead of three in UTF-8.
+- In case if your product will work with Cyrillic, Greek and Hebrew, both encodings will use 2 bytes to represent the code point. If you plan to work mainly with Asian languages, the choice of UTF-16 will be preferable. You require only 2 bytes to write a character, instead of three in UTF-8.
 
-If your product is designed to work with Web, or on Unix systems, choosing UTF-8 will be preferable. In turn, Windows, Java, Python, C # use UTF-16 as the internal encoding.
+- If your product is designed to work with Web, or on Unix systems, choosing UTF-8 will be preferable. In turn, Windows, Java, Python, C# use UTF-16 as the internal encoding.
 
-UTF-8 is independent of byte order. UTF-16 can have two byte order options, and it necessarily requires the use of BOM. In UTF-8, BOM is often not used at all.
+- UTF-8 is independent of byte order. UTF-16 can have two byte order options, and it necessarily requires the use of BOM. In UTF-8, BOM is often not used at all.
 
-Computers mainly communicate in the ASCII range, and here UTF-8 has the full advantage.
+- Computers mainly communicate in the ASCII range, and here UTF-8 has the full advantage.
 
-UTF-16 is better for presenting data in memory, as the byte order will not matter. Indexing by code points will be performed faster. 
+- UTF-16 is better for presenting data in memory, as the byte order will not matter. Indexing by code points will be performed faster. 
 
-The code point in UTF-8 can contain from 1 to 4 bytes, which makes it difficult to manipulate the string (for example, calculating the number of characters in a string).
+- The code point in UTF-8 can contain from 1 to 4 bytes, which makes it difficult to manipulate the string (for example, calculating the number of characters in a string).
 
-UTF-8 is a self-synchronizing encoding. This means that if any byte in the string is damaged, only one character will be invalid. Rest of the string will be correctly presented.
+- UTF-8 is a self-synchronizing encoding. This means that if any byte in the string is damaged, only one character will be invalid. Rest of the string will be correctly presented.
 
 
