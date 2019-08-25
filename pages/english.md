@@ -64,7 +64,7 @@ Below is a map of the Unicode code space. Each small field (square) of the map c
 
 ![Unicode code points location map](https://fedor1984.github.io/pages/english/assets/map.png)
 
-Figure 1. .
+![Unicode code points location map]({{ site.url }}/assets/map.png)
 
 Blue points in the table indicate already defined points, green - private code points. The largest space is the free fields, they are marked white.
 
