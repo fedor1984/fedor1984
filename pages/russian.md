@@ -1,237 +1,230 @@
 ---
 layout: page
-title: Unicode and UTF encodings explanation
+title: Стандарт Unicode. UTF-8 и UTF-16.
 ---
 
-### Contents
+### Содержание
 
-- Purpose of the document.
-- Coding history. ASCII.
-- The history of Unicode creation. UCS and UTF.
-- Basic coding principles in Unicode.
-- Translation of a character into machine code. Definition of encoding.
-- UTF-8. Coding algorithm.
-- UTF-16. Coding algorithm.
-- Byte order. Unicode byte order marker.
-- General information about UTF-32.
-- Comparison of UTF-8 and UTF-16. Findings.
+- Цель документа.
+- История кодирования. ASCII.
+- История создания и принцип работы Unicode.
+- Базовые принципы кодирования в Unicode.
+- Перевод символа в машинный код. Определение кодировки.
+- UTF-8. Алгоритм кодирования.
+- UTF-16. Алгоритм кодирования.
+- Порядок байт. Маркер порядка байт в Unicode.
+- Общая информация о  UTF-32.
+- Сравнение UTF-8 и UTF-16. Выводы.
 
-### Purpose of the document
 
-After reading the document, the reader should have a clear understanding of the Unicode character encoding standard, and know how Unicode characters are translated into machine code. Also, this document will describe the encoding principles in UTF-8 and UTF-16, briefly UTF-32, main differences between the encodings, pros and cons of each.
+### Цель документа
 
-The document is designed for technical specialists with an understanding of binary and hexadecimal number systems.
+После прочтения документа читатель должен иметь ясное представление о стандарте кодирования символов Unicode, а также знать, как символы Unicode переводятся в машинный код. Также в данном документе будут изложены принципы кодирования в UTF-8 и UTF-16, коротко UTF-32, представлены основные различия между кодировками, плюсы и минусы каждой.
 
-### Coding history. ASCII.
+Документ рассчитан на технических специалистов, имеющих представление о двоичной и шестнадцатеричной системах счисления.
 
-Coding is the presentation of an informational message in the form of a code. The simplest coding method, known since ancient times, is a signal fire. 
+### История кодирования. ASCII.
 
-The first tool that can convey the alphabet and punctuation is Samuel Morse code. The term “code table” appears in the Morse code. This is a table of correspondence between symbols and their codes. 
+Кодирование - это представление информационного сообщения в виде кода. Простейшим способом кодирования, известным с древних времен, является сигнальный огонь. 
 
-The evolution of Morse code is the Bodo code. 5 pulses were used to transmit each character. In fact, the Bodo code is the world's first binary information coding system. The size of each character was fixed at 5 bits.
+Первым инструментом, способным передать алфавит и знаки препинания, является азбука Самюэля Морзе. В азбуке появляется термин “кодовая таблица” - это таблица соответствия между символами и их кодами. Развитием азбуки Морзе считается код Бодо. Для передачи каждого символа использовалось 5 импульсов. По факту, код Бодо является первой в мире двоичной системой кодирования информации. Размер каждого символа был фиксирован и составлял 5 бит.
 
-In 1936, the United States created the ASCII (American Standart Code for Information Interchange). ASCII is a table of correspondence of characters to their codes, size 8 by 16 cells.
+В 1936 г в США была создана кодировочная таблица ASCII (American Standart Code for Information Interchange). ASCII представляет собой таблицу соответствия символов их кодам, размером 8 на 16 ячеек.
 
-The ASCII table, with the exception of Latin letters and punctuation, contains control characters, such as the beginning of the text (SOT), line feed (LF), the end of the transmission (EOT), and others - 33 characters totally.
+Таблица ASCII, за исключением латинских букв и знаков препинания, содержит в себе управляющие символы, такие как начало текста (SOT), перевод строки (LF), конец передачи (EOT), и другие - всего 33 символа. 
 
-The story of coding evolution could end on ASCII, if humanity spoke only English and did not use symbols like ¿- “Inverted Question Mark”. However, we know that there are thousands of languages in the world, and many special characters. Came up a logical idea - to combine all existing alphabets and all special characters into one table. 
+На ASCII история развития кодирования могла закончиться, если бы человечество разговаривало только на английском языке, и не использовало символы типа ¿ - “Перевернутый вопросительный знак”. Однако мы знаем, что в мире существуют тысячи языков, и множество специальных символов. Возникла логичная идея - объединить все существующие алфавиты и все спецсимволы в одну таблицу. 
 
-So the Unicode standard appeared.
+Так появился стандарт Unicode.
 
-### The history of Unicode creation. UCS and UTF.
+### История создания и принцип работы Unicode.
 
-Unicode is a character encoding standard that includes almost all the written languages of the world. The standard was proposed by the Unicode Consortium (Unicode Inc.) in 1991. 
+Unicode - стандарт кодирования символов, включающий в себя практически все письменные языки мира. Стандарт был предложен некоммерческой организацией Unicode Consortium в 1991 году. 
 
-The standard consists of two parts: Universal Character Set, UCS, and Universal Transformation Format, UTF - a set of encodings.
+Стандарт состоит из двух частей: Universal Character Set, UCS - универсальный набор символов, и Universal Transformation Format, UTF - набор кодировок.
 
-In simple terms, UCS is a table where each character has its own hexadecimal code, prefixed with U+. 
+Говоря простым языком, UCS - таблица, где каждому символу соответствует свой код в шестнадцатеричной кодировке, с префиксом U+. 
 
-UTF is an algorithm for translating the UCS hexadecimal code to binary. In other words, this is a translation of the intermediate U+ code into binary language that the computer understands.
+UTF - это алгоритм перевода шестнадцатеричного кода UCS в двоичный. Иными словами, это перевод промежуточного U+ кода в язык, понятный компьютеру.
 
-### Basic coding principles in Unicode. 
+### Базовые принципы кодирования в Unicode. 
 
-Symbols in Unicode have a specific name - “code point”. For example, the Latin letter E will be represented by the code point U+0045. It is worth noting that the lowercase letter “e”, as well as the Cyrillic characters “Е” and “е” will have their own codes in the table - despite the same letter inscription.
+Символы в Unicode имеют специфическое название - “кодовая точка”. К примеру, латинская буква E будет представлена кодовой точкой U+0045. Стоит отметить, что  строчная буква “e”, а также символы кириллицы “E” и “е” будут иметь собственные коды в таблице - несмотря на одинаковое начертание.
 
-Each code point also has additional characteristics, such as:
+Кодовая точка имеет также дополнительные характеристики, такие как:
 
-- HTML and CSS word codes.
-- The section of the Unicode table in which the code point is located.
-- Name in Unicode (E - Latin Capital Letter E).
+- HTML и CSS коды слова.
+- Раздел таблицы, в котором находится кодовая точка.
+- Название в Unicode (E - Latin Capital Letter E)
 
-All code points form a set called “code space”. This space consists of 1,114,112 code points, of which 128,237 are occupied - that is only 12%. 
+Кодовые точки образуют множество, которое называется “кодовое пространство”. Это пространство состоит из 1 114 112 кодовых точек, из которых заняты 128 237 - то есть всего 12%. 
 
-Below is a map of the Unicode code space. Each small field (square) of the map contains 16 * 16 = 256 code points. In turn of, each large field contains 65536 code points. The total number of large fields is 17. Unicode also reserves “private points” - fields for the internal needs of applications.
+Ниже представлена карта кодового пространства Unicode. Каждое маленькое поле (квадрат) карты содержит 16 * 16 = 256 кодовых точек. В свою очередь, каждое большое поле содержит 65536 кодовых точек. Общее количество больших полей равно 17. Unicode также резервирует “приватные точки” - поля для внутренних нужд приложений.
 
-Figure 1. Unicode code points location map.
+![Карта расположения кодовых точек]({{ site.url }}/assets/map.png)
 
-Blue points in the table indicate already defined points, green - private code points. The largest space is the free fields, they are marked white.
+Синим цветом в таблице обозначены уже определенные точки, зеленым - приватные кодовые точки. Самое большое пространство - это свободные поля, они отмечены белым.
 
-The first large field (upper left square) is used most often. It is called the “Basic Multilingual Plane (BMP)”, and contains almost all the characters that are used in modern texts. BMP includes Latin letters, Korean, Japanese and Chinese alphabets, Cyrillic, and other languages. 
+Первое большое поле (левый верхний квадрат) используется наиболее часто. Оно называется “Базовое мультиязычное поле”, и содержит практически все символы, которые используются в современных текстах. Базовое поле включает в себя латинские буквы, корейский, японский и китайский алфавит, кириллицу, и другие языки. 
 
-The second field contains more specific languages, for example, Egyptian hieroglyphs, as well as emoji. The third field contains rare Chinese characters. 
+Второе поле содержит более специфические языки, например, египетские иероглифы, а также эмодзи. Третье поле содержит китайские символы. 
 
-Figure 2. Main Unicode fields.
+### Перевод символа в машинный код. Определение кодировки.
 
-### Translation of a character into machine code. Definition of encoding.
+Мы выяснили, что каждый символ в Unicode представлен кодовым словом в диапазоне U+0000 - U+10FFFF. Следующая задача - разобраться, как шестнадцатеричный код переводится в двоичный, понятный компьютеру. Для этого преобразования используются форматы кодирования UTF. Их также называют “кодировками”.
 
-We found that each character in Unicode is represented by a code word in the range U+0000 - U+10FFFF. Our next task is to understand how the hexadecimal code is translated into a binary, understandable to the computer. UTF encoding formats are used for this conversion. They often called simply “encodings”.
+Для представления кодовой точки в бинарном виде мы можем использовать 1,2 или 4 байт (8, 16, и 32 бита соответственно). Это и есть упрощенное определение кодировок UTF-8, UTF-16, UTF-32. 
 
-To represent the code point in binary form, we can use 1, 2 or 4 bytes (8, 16, and 32 bits, respectively). This is a simplified definition of the encodings UTF-8, UTF-16, UTF-32.
+Следует отметить, что в Unicode используется маркер последовательности байт (Byte Order Marker, BOM) - специальный символ, вставляемый в начало текстового потока,  и обозначающий то, что в файле (потоке) используется Юникод, а также для указания кодировки и порядка байтов, с помощью которых символы Юникода были закодированы.
 
-It should be noted that a Byte Order Marker (abbreviated as BOM) is used in Unicode. BOM is a special character inserted at the beginning of the text stream, indicating that the file (stream) uses Unicode. BOM is also used to specify the encoding and byte order of characters.
-
-Consider the different encodings using the example of the Latin letter E:
-
+Рассмотрим различные кодировки на примере латинской буквы E:
 ```
-Code point: U + 0045
-Hexadecimal number: 45
-Decimal number: 69 (serial number in the Unicode table)
+Кодовая точка: U+0045
+Шестнадцатеричное число: 45
+Десятичное число: 69 (порядковый номер в таблице Unicode)
 
 UTF-8:                             01000101
 UTF-16:                   00000000 01000101
 UTF-32: 00000000 00000000 00000000 01000101
 ```
 
-It is easy to see that only one working byte is required to encode a code point from the BMP. In the UTF-16 and UTF-32 encodings, all bytes except the first one are occupied by zeros and do not make sense. Why do we need all this “heavy” encodings, if there is UTF-8? 
+Нетрудно заметить, что для кодировании кодовой точки из Базового поля требуется всего один рабочий байт. В кодировках UTF-16 и UTF-32 все байты, кроме первого, заняты нулями, и не имеют смысла. Для чего же нужны “тяжелые” кодировки, если есть UTF-8? Подробное объяснение этому будет ниже.
 
-A detailed explanation of this will be given below.
+### UTF-8. Алгоритм кодирования.
 
+UTF-8 является наиболее распространенной кодировой в веб-пространстве. Эта кодировка использует от 1 до 4 байт для представления символа, и является полностью совместимой с ASCII. UTF-8 широко применяется в UNIX-подобных системах.
 
-### UTF-8. Coding algorithm.
-
-UTF-8 is the most common coding in web space. This encoding uses 1 to 4 bytes to represent a character, and is fully ASCII compatible. UTF-8 is widely used on UNIX-like systems.
-
-The encoding algorithm in UTF-8 is divided into several stages.
-First you need to find out how many bytes are needed to encode the character. The correspondence table is used for this:
+Алгоритм кодирования в этой кодировке разделен на несколько этапов.
+Сначала нужно выяснить, какое количество байт потребуется для кодирования символа. Для этого используется таблица соответствия:
 
 
-|Code point range |Required number of bytes|
+|Диапазон кодовых точек |Требуемое количество байт|
 |-----------------|------------------------|
 |00000000-0000007F|1                       |
 |00000080-000007FF|2                       |
 |00000800-0000FFFF|3                       |
 |00010000-0010FFFF|4                       |
-  
-  
-As we already explained above, only one byte is required for the Latin letter E, because this code point is located in BMP. 
 
-For the “tick ✓” symbol, 3 bytes are required, as it lies in the third range.
 
-Next, you need to set the higher bits of the first byte to the corresponding value:
+Как мы уже выяснили выше, для латинской буквы E потребуется всего один байт, т.к. она находится в первом диапазоне. 
 
-|Higher bits|Number of bytes for encoding|
+Для символа “галочка ✓” потребуется уже 3 байта, т.к. он лежит в третьем диапазоне.
+
+Далее, требуется установить старшие биты первого байта в соответствующее значение:
+
+
+|Старший бит|Требуемое количество байт|
 |-----------|----------------------------|
 |0xxxxxxx  |1                            |
 |110xxxxx  |2                            |
 |1110xxxx  |3                            |
 |11110xxx  |4                            |
-  
-
-It is also necessary to determine the most significant bits in the intermediate bytes (2-4). If more than two bytes are required for encoding, first two bits in bytes 2-4 always take 10xxxxxxx value.
 
 
-|Number of Bytes| Significant Bits| Pattern|
+Также нужно определить старшие биты в промежуточных байтах (2-4). Если для кодирования требуется более двух байт, первые два бита в байтах 2-4 всегда принимают значение 10хххххх.
+
+
+
+|Количество байт| Значащих бит| Шаблон|
 |---------------|-----------------|--------|
 |1              |7                |0xxxxxxx|
 |2              |11               |110xxxxx 10xxxxxx|
 |3              |16               |1110xxxx 10xxxxxx 10xxxxxx|
 |4              |21               |11110xxx 10xxxxxx 10xxxxxx 10xxxxxx|
-  
 
-Thus, we found out that for the “tick” symbol the first byte will be equal to 1110xxxx. The second and third bytes will begin with 10xxxxxx.
 
-The final step in character encoding will be to set the significant bits, to match Unicode characters. You need to start filling with the least significant bits of the character number, putting them in the least significant bits of the last byte, and then continue from right to left until the first byte. The free bits of the first byte are filled with zeros.
+Таким образом, мы выяснили, что для символа “галочка” первый байт будет равен 1110хххх. Второй и третий байты будут начинаться с 10хххххх.
 
-As a result, we got a binary representation for the tick symbol. These are 3 bytes:
+Последним шагом в кодировании символа будет установка значащих битов в соответствие с символами Unicode. Начать заполнение нужно с младших битов номера символа, поставив их в младшие биты последнего байта, после чего продолжить справа налево до первого байта. Свободные биты первого байта заполняются нулями.
+
+В итоге, мы получили двоичное представление для символа “галочка”. Это 3 байта:
 ```
 11100010 10011100 10010011
 ```
-We figured out a way to represent code points in UTF-8 encoding. Below we consider working with the UTF-16.
+Мы выяснили способ представления кодовых точек в кодировке UTF-8. Ниже рассмотрим работу с кодировкой UTF-16.
 
-### UTF-16. Coding algorithm.
+### UTF-16. Алгоритм кодирования.
 
-UTF-16 is a character encoding method in which characters are encoded by a set of double-byte words. The range of values from U+0000 to U+FFFF is written in two bytes. For example, the Latin letter E will be written like this:
+UTF-16 представляет собой способ кодирования символов, в котором символы кодируются набором двухбайтовых слов. Диапазон значений от U+0000 до U+FFFF записывается двумя байтами. К примеру, латинская буква E будет записана так:
 ```
 U+0045 	00000000 01000101
 ```
-Note that the first byte is completely filled by zeros.
+Обратите внимание, что первый байт полностью забит нулями. 
 
-Only 65535 code points can be represented using two bytes. However, we know that there are significantly more characters in Unicode. Four bytes are used for representation of code points in a range greater than U+FFFF. Encoding of these bytes occurs using “surrogate pairs”. 
+С помощью двух байт возможно представление только 65535 кодовых точек. Однако, мы знаем, что символов в Unicode значительно больше. Для представления кодовых точек в диапазоне больше U+FFFF применяется уже 4 байта. Кодирование этих байт происходит с помощью “суррогатных пар”. 
 
-A surrogate pair is a two-byte Unicode character that, in combination with another surrogate pair, gives a Unicode character in the range above U+FFFF. Surrogate pairs can be “upper” and “lower” (“leading” and “trailing” in other words). 
+Суррогатная пара - это двухбайтовый символ Unicode, который в комбинации с другой суррогатной парой дает символ Unicode в диапазоне выше U+FFFF. Суррогатные пары бывают верхние и нижние (“leading” и “trailing”). 
 ```
-The range of the upper surrogate pairs: U+800 - U+DBFF
-The range of the lower surrogate pairs: U+DC00 - U+DFFF
+Диапазон верхних суррогатных пар: U+800 - U+DBFF
+Диапазон нижних суррогатных пар: U+DC00 - U+DFFF
 ```
-Let's look on example of how to make encoding of characters above U+FFFF using surrogate pairs. To do this, we turn to the symbols of the book “Canon of Changes”, which was written in China around 700 BC.
+Разберем на примере, как происходит кодирование символов выше U+FFFF с помощью суррогатных пар. Для этого обратимся к символам книги “Канон Перемен”, которая была написана в Китае около 700 года до н.э.
 
-The 𝌡 symbol - a "tetragram of changes", will be represented in UTF-16 as follows:
+Символ 𝌡 - тетраграмма перемен, будет представлен в UTF-16 в следующем виде:
 ```
 D8 34 DF 21	11011000 00110100 11011111 00100001
 ```
-Here, the first two bytes is an upper surrogate pair U+D834, while the second two bytes U+DF21 is a lower surrogate pair.
+Здесь первые два байта - это верхняя суррогатная пара U+D834, тогда как вторые два байта U+DF21 являются нижней суррогатной парой.
 
-The U+D834 and U+DF21 characters themselves are not significant in Unicode. In other words, there is no letter or graphic representation for these characters. They are reserved specifically for the compilation of surrogate UTF-16 encoding pairs, and only work together.
+Сами по себе символы U+D834 и U+DF21 не являются значимыми в Unicode. Иными словами, для этих символов нет буквенного или графического представления. Они зарезервированы конкретно под составление суррогатных пар кодировки UTF-16, и “работают” только вместе.
 
-Consider also the “tick” symbol from the UTF-8 encoding section. In UTF-16, this symbol will be represented as follows:
+Рассмотрим также символ “галочка” из раздела о кодировке UTF-8. В UTF-16 этот символ будет представлен так:
 ```
 U+2713 	00100111 00010011
 ```
-Please note that the “tick” character in UTF-16 encoding only takes 2 bytes, while in UTF-8 it took 3 bytes to encode.
+Обратите внимание, что символ “галочка” в кодировке UTF-16 занимает только 2 байта, тогда как в UTF-8 для его кодирования потребовалось 3 байта.
 
-In UTF-16 encoding, the byte order may be different. This order depends on the processor architecture. 
-The symbol of changes 𝌡 can be represented in two versions:
+В кодировке UTF-16 порядок байт может быть разным. Этот порядок зависит от архитектуры процессора, на котором производится обработка данных. Символ перемен 𝌡 может быть представлен в двух вариантах:
 ```
 D8 34 DF 21	11011000 00110100 11011111 00100001
 34 D8 21 DF	00110100 11011000 00100001 11011111
 ```
-The first option is called Big Endian (BE), the second - Little Endian (LE). What these formats mean and how the processor distinguishes them will be discussed in the next chapter.
+Первый вариант называется Big Endian (BE), второй - Little Endian (LE). О том, что означают эти форматы, и как процессор различает их, будет рассказано в следующей главе.
 
-### Byte order. Unicode byte order marker.
 
-Different types of processors use different byte orders.
+### Порядок байт. Маркер порядка байт в Unicode.
 
-Big Endian is the “high to low” byte order. It corresponds to the usual order of writing Arabic numbers - from left to right. This byte order is used in SPARC, Motorola, IBM processors, as well as in the TCP/IP protocol.
+Различные типы процессоров используют разный порядок байт.
 
-The order of Little Endian, in turn, is “from low to high”. For example, the number 123 in this order would be written as 321. This byte order is used in x86 CPU-s family, as well as in USB and PCI interfaces.
+Big Endian является порядком байт “от старшего к младшему”. Он соответствует привычному порядку записи арабских цифр - слева направо.Такой порядок байт используется в процессорах SPARC, Motorola, IBM, а также в протоколе TCP/IP.
 
-The question arises - how does the processor determine which order of bytes is used to work with the information block? For this, a special character was introduced in Unicode - U+FEFF. 
+Порядок Little Endian, в свою очередь  - ”от младшего к старшему”. К примеру, число 123 в этом порядке было бы записано как 321. Этот порядок байт применяется в процессорах семейства x86, а также в интерфейсах USB и PCI.
 
-We already know it - this is a Byte Order Marker (BOM). 
+Возникает вопрос - как процессор определяет, какой порядок байт использовать для работы с информационным блоком? Для этого в Unicode был введен специальный символ - U+FEFF. Этот символ уже известен нам как “маркер последовательности байт” (Byte Order Marker, BOM). 
 ```
-BOM for encoding UTF-16BE: 0xFE 0xFF
-BOM for encoding UTF-16LE: 0xFF 0xFE
+BOM для кодировки UTF-16BE: 0xFE 0xFF
+BOM для кодировки UTF-16LE:  0xFF 0xFE
 ```
-It should be noted that in Unicode there is no U+FFFE character. This is done to uniquely determine BOM symbol, and therefore, byte order. 
+Стоит отметить, что в Unicode не существует символа U+FFFE. Это сделано для однозначного определения BOM, и следовательно, порядка байт. 
 
-UTF-8 encoding does not use BOM to determine byte order. The standard implies adding a BOM to the beginning of a file encoded in UTF-8. This is necessary to unambiguously determine the fact that the file is UTF-8 encoded. Other encodings - UTF-16 and UTF-32 requires mandatory using BOM.
+Кодировка UTF-8 не использует BOM для определения порядка байт. При этом стандарт подразумевает добавление BOM в начало файла, закодированного в UTF-8. Это нужно для однозначного определения факта, что файл имеет кодировку UTF-8.
 
-### General information about UTF-32.
+### Общая информация о  UTF-32.
 
-The Unicode code points can also be encoded in UTF-32. This encoding always uses 4 bytes to represent any Unicode character. In other words, even the “E” character from the BMP in UTF-32 will look like 00000000 00000000 00000000 01000101. 
+Стандарт Unicode также может быть кодирован в UTF-32. Эта кодировка всегда использует 4 байта для представления любого символа Unicode. Иными словами, даже символ  “E“ из Базового поля в UTF-32 будет иметь вид 00000000 00000000 00000000 01000101. 
 
-As you can see in this example, the first three bytes are “excess”. Hence the main disadvantage of the encoding is that the text will take up too much disc space. This is especially noticeable when working with BMP code points.
+Как видно, в примере первые три байта - “лишние”. Отсюда главный минус кодировки - слишком большой объем, который займет текст на диске компьютера. Особенно это заметно при работе с символами из Базового поля.
 
-The UTF-32 encoding must also have a BOM at the beginning of the text, and can be either Big Endian or Little Endian.
+Кодировка UTF-32 также должна иметь BOM в начале текста, и может быть как Big Endian, так и Little Endian.
 
-### Comparison of UTF-8 and UTF-16. Findings.
+### Сравнение UTF-8 и UTF-16. Выводы.
 
-Now we know the features of the UTF-8 and UTF-16 encodings, and we can make the following observations and conclusions:
+Теперь мы знаем особенности кодировок UTF-8 и UTF-16, и можем сделать следующие наблюдения и выводы:
 
-- UTF-8 is ideal for working with the Latin alphabet and ASCII control characters, because only 1 byte is required to encode these characters. If your product contains Latin letters (even mixed with other languages), UTF-8 would be a great choice.
+- UTF-8 идеально подойдет для работы с латиницей и управляющими символами диапазона ASCII, ведь для кодирования этих символов потребуется всего 1 байт. Если ваш продукт содержит латиницу (даже вперемешку с другими языками), UTF-8 будет отличным выбором.
 
-- In case if your product will work with Cyrillic, Greek and Hebrew, both encodings will use 2 bytes to represent the code point. If you plan to work mainly with Asian languages, the choice of UTF-16 will be preferable. You require only 2 bytes to write a character, instead of three in UTF-8.
+- В случае, если ваш продукт будет работать с кириллицей, греческим языком и ивритом, обе кодировки будут использовать по 2 байта для представления кодовой точки. Если же вы планируете в основном работать с азиатскими языками, выбор UTF-16 будет предпочтительней, т.к. для записи символа потребуется 2 байт (вместо трех в UTF-8).
 
-- If your product is designed to work with Web, or on Unix systems, choosing UTF-8 will be preferable. In turn, Windows, Java, Python, C# use UTF-16 as the internal encoding.
+- Если ваш продукт рассчитан на работу с веб-пространстве, или в Unix-системах, выбор UTF-8 будет предпочтительней. В свою очередь, Windows, Java, Python, C# используют UTF-16 в качестве внутренней кодировки.
 
-- UTF-8 is independent of byte order. UTF-16 can have two byte order options, and it necessarily requires using of BOM. In UTF-8, BOM is often not used at all.
+- UTF-8 не зависит от порядка байт. UTF-16 может иметь два варианта порядка байт, и обязательно требует использование BOM. В UTF-8 BOM зачастую вовсе не используют.
 
-- Computers mainly communicate in the ASCII range, and here UTF-8 has the full advantage.
+- Общение между компьютерами происходит в основном в диапазоне ASCII, и здесь UTF-8 имеет полное преимущество.
 
-- UTF-16 is better for presenting data in memory, as the byte order will not matter. Indexing by code points will be performed faster. 
+- UTF-16 лучше подойдет для представления данных в памяти, т.к. порядок байт не будет иметь значения, а индексация по кодовым точкам будет выполняться быстрее. 
 
-- The code point in UTF-8 can contain from 1 to 4 bytes, which makes it difficult to manipulate the string (for example, calculating the number of characters in a string).
+- Кодовая точка в UTF-8 может содержать от 1 до 4 байт, что делает затруднительным манипуляции со строкой (например, вычисление количества символов в строке).
 
-- UTF-8 is a self-synchronizing encoding. This means that if any byte in the string is damaged, only one character will be invalid. Rest of the string will be correctly presented.
+- UTF-8 является самосинхронизирующейся кодировкой. Это означает, что при повреждении какого-либо байта в строке будет неверным только один символ, остальная часть строки будет представлена корректно.
 
 
