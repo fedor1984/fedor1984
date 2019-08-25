@@ -110,7 +110,7 @@ First you need to find out how many bytes are needed to encode the character. Th
 |00000800-0000FFFF|3                       |
 |00010000-0010FFFF|4                       |
   
-  
+<br />
 As we already explained above, only one byte is required for the Latin letter E, because this code point is located in BMP. 
 
 For the “tick ✓” symbol, 3 bytes are required, as it lies in the third range.
@@ -124,7 +124,7 @@ Next, you need to set the higher bits of the first byte to the corresponding val
 |1110xxxx  |3                            |
 |11110xxx  |4                            |
   
-
+<br />
 It is also necessary to determine the most significant bits in the intermediate bytes (2-4). If more than two bytes are required for encoding, first two bits in bytes 2-4 always take 10xxxxxxx value.
 
 
@@ -135,7 +135,7 @@ It is also necessary to determine the most significant bits in the intermediate 
 |3              |16               |1110xxxx 10xxxxxx 10xxxxxx|
 |4              |21               |11110xxx 10xxxxxx 10xxxxxx 10xxxxxx|
   
-
+<br />
 Thus, we found out that for the “tick” symbol the first byte will be equal to 1110xxxx. The second and third bytes will begin with 10xxxxxx.
 
 The final step in character encoding will be to set the significant bits, to match Unicode characters. You need to start filling with the least significant bits of the character number, putting them in the least significant bits of the last byte, and then continue from right to left until the first byte. The free bits of the first byte are filled with zeros.
