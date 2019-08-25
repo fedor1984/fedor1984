@@ -1,4 +1,4 @@
-﻿---
+---
 layout: page
 title: Unicode and UTF codepages explanation  
 ---
@@ -13,5 +13,3 @@ Documents listed below:
 
 - [English version](pages/english.md)
 - [Русская версия](pages/russian.md)
-
----
