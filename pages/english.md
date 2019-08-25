@@ -70,8 +70,6 @@ The first large field (upper left square) is used most often. It is called the �
 
 The second field contains more specific languages, for example, Egyptian hieroglyphs, as well as emoji. The third field contains rare Chinese characters. 
 
-![Main Unicode fields]({{ site.url }}/assets/map2.png)
-
 ### Translation of a character into machine code. Definition of encoding.
 
 We found that each character in Unicode is represented by a code word in the range U+0000 - U+10FFFF. Our next task is to understand how the hexadecimal code is translated into a binary, understandable to the computer. UTF encoding formats are used for this conversion. They often called simply “encodings”.
