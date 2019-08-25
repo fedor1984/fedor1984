@@ -62,7 +62,9 @@ All code points form a set called “code space”. This space consists of 1,114
 
 Below is a map of the Unicode code space. Each small field (square) of the map contains 16 * 16 = 256 code points. In turn of, each large field contains 65536 code points. The total number of large fields is 17. Unicode also reserves “private points” - fields for the internal needs of applications.
 
-Figure 1. Unicode code points location map.
+![Unicode code points location map](https://fedor1984.github.io/pages/english/assets/map.png)
+
+Figure 1. .
 
 Blue points in the table indicate already defined points, green - private code points. The largest space is the free fields, they are marked white.
 
