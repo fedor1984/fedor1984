@@ -65,7 +65,8 @@
   color: #FFF; }
 
 .table {
-  padding: 0; }
+  padding: 0; 
+  border-bottom: 6px;}
   table tr {
     border-top: 1px solid #cccccc;
     background-color: white;
