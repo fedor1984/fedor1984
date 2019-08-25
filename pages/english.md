@@ -24,29 +24,29 @@ The document is designed for technical specialists with an understanding of bina
 
 ### Coding history. ASCII.
 
-Coding is the presentation of an informational message in the form of a code. The simplest coding method, known since ancient times, is a signal fire. 
+Coding is the presentation of an informational message in a code form. The simplest coding method, known since ancient times, is a signal fire. 
 
 The first tool that can convey the alphabet and punctuation is Samuel Morse code. The term “code table” appears in the Morse code. This is a table of correspondence between symbols and their codes. 
 
 The evolution of Morse code is the Bodo code. 5 pulses were used to transmit each character. In fact, the Bodo code is the world's first binary information coding system. The size of each character was fixed at 5 bits.
 
-In 1936, the United States created the ASCII (American Standart Code for Information Interchange). ASCII is a table of correspondence of characters to their codes, size 8 by 16 cells.
+In 1936, United States created the ASCII (American Standart Code for Information Interchange). ASCII is a table of correspondence of characters to their codes, sized 8 by 16 cells.
 
-The ASCII table, with the exception of Latin letters and punctuation, contains control characters, such as the beginning of the text (SOT), line feed (LF), the end of the transmission (EOT), and others - 33 characters totally.
+ASCII table, with the exception of Latin letters and punctuation, contains control characters, such as the start of the text (SOT), line feed (LF), end of the transmission (EOT), and others - 33 characters totally.
 
-The story of coding evolution could end on ASCII, if humanity spoke only English and did not use symbols like ¿- “Inverted Question Mark”. However, we know that there are thousands of languages in the world, and many special characters. Came up a logical idea - to combine all existing alphabets and all special characters into one table. 
+The story of coding evolution could end on ASCII, if humanity spoke only English and did not use symbols like ¿- “Inverted Question Mark”. However, we know that there are thousands of languages in the world, and many special characters. A logical idea came up - to combine all existing alphabets and all special characters into one table. 
 
 So the Unicode standard appeared.
 
 ### The history of Unicode creation. UCS and UTF.
 
-Unicode is a character encoding standard that includes almost all the written languages of the world. The standard was proposed by the Unicode Consortium (Unicode Inc.) in 1991. 
+Unicode is a character encoding standard that includes almost all written languages of the world. This standard was proposed by the Unicode Consortium (Unicode Inc.) in 1991. 
 
-The standard consists of two parts: Universal Character Set, UCS, and Universal Transformation Format, UTF - a set of encodings.
+Standard consists of two parts: Universal Character Set, UCS, and Universal Transformation Format, UTF - a set of encodings.
 
 In simple terms, UCS is a table where each character has its own hexadecimal code, prefixed with U+. 
 
-UTF is an algorithm for translating the UCS hexadecimal code to binary. In other words, this is a translation of the intermediate U+ code into binary language that the computer understands.
+UTF is an algorithm for translating UCS hexadecimal code to binary. In other words, this is translation of the intermediate U+ code into binary language that the computer understands.
 
 ### Basic coding principles in Unicode. 
 
@@ -60,7 +60,7 @@ Each code point also has additional characteristics, such as:
 
 All code points form a set called “code space”. This space consists of 1,114,112 code points, of which 128,237 are occupied - that is only 12%. 
 
-Below is a map of the Unicode code space. Each small field (square) of the map contains 16 * 16 = 256 code points. In turn of, each large field contains 65536 code points. The total number of large fields is 17. Unicode also reserves “private points” - fields for the internal needs of applications.
+Below is a map of the Unicode code space. Each small field (square) of the map contains 16 * 16 = 256 code points. In turn of, each large field contains 65536 code points. Total number of large fields is 17. Unicode also reserves “private points” - fields for the internal needs of applications.
 
 ![Code points location map]({{ site.url }}/assets/map.png)
 
@@ -140,7 +140,7 @@ Thus, we found out that for the “tick” symbol the first byte will be equal t
 
 The final step in character encoding will be to set the significant bits, to match Unicode characters. You need to start filling with the least significant bits of the character number, putting them in the least significant bits of the last byte, and then continue from right to left until the first byte. The free bits of the first byte are filled with zeros.
 
-As a result, we got a binary representation for the tick symbol. These are 3 bytes:
+Let's find out a binary representation for the tick symbol. These are 3 bytes:
 ```
 11100010 10011100 10010011
 ```
@@ -148,7 +148,7 @@ We figured out a way to represent code points in UTF-8 encoding. Below we consid
 
 ### UTF-16. Coding algorithm.
 
-UTF-16 is a character encoding method in which characters are encoded by a set of double-byte words. The range of values from U+0000 to U+FFFF is written in two bytes. For example, the Latin letter E will be written like this:
+UTF-16 is a character encoding method where each character is encoded by a set of double-byte words. The range of values from U+0000 to U+FFFF is written in two bytes. For example, the Latin letter E will be written like this:
 ```
 U+0045 	00000000 01000101
 ```
@@ -171,14 +171,14 @@ Here, the first two bytes is an upper surrogate pair U+D834, while the second tw
 
 The U+D834 and U+DF21 characters themselves are not significant in Unicode. In other words, there is no letter or graphic representation for these characters. They are reserved specifically for the compilation of surrogate UTF-16 encoding pairs, and only work together.
 
-Consider also the “tick” symbol from the UTF-8 encoding section. In UTF-16, this symbol will be represented as follows:
+Consider the “tick” symbol from the UTF-8 encoding section. In UTF-16, this symbol will be represented as follows:
 ```
 U+2713 	00100111 00010011
 ```
 Please note that the “tick” character in UTF-16 encoding only takes 2 bytes, while in UTF-8 it took 3 bytes to encode.
 
 In UTF-16 encoding, the byte order may be different. This order depends on the processor architecture. 
-The symbol of changes 𝌡 can be represented in two versions:
+Symbol of changes 𝌡 can be represented in two versions:
 ```
 D8 34 DF 21	11011000 00110100 11011111 00100001
 34 D8 21 DF	00110100 11011000 00100001 11011111
@@ -189,11 +189,11 @@ The first option is called Big Endian (BE), the second - Little Endian (LE). Wha
 
 Different types of processors use different byte orders.
 
-Big Endian is the “high to low” byte order. It corresponds to the usual order of writing Arabic numbers - from left to right. This byte order is used in SPARC, Motorola, IBM processors, as well as in the TCP/IP protocol.
+Big Endian is the “high to low” byte order. It corresponds to the usual order of writing Arabic numbers - from left to right. This byte order is used in SPARC, Motorola, IBM processors, as well as in TCP/IP protocol.
 
-The order of Little Endian, in turn, is “from low to high”. For example, the number 123 in this order would be written as 321. This byte order is used in x86 CPU-s family, as well as in USB and PCI interfaces.
+The order of Little Endian, in turn, is “from low to high”. For example, number 123 in this order would be written as 321. This byte order is used in x86 CPU-s family, as well as in USB and PCI interfaces.
 
-The question arises - how does the processor determine which order of bytes is used to work with the information block? For this, a special character was introduced in Unicode - U+FEFF. 
+Arises the question - how does the processor determine which order of bytes is used to work with the information block? For this, special character was introduced in Unicode - U+FEFF. 
 
 We already know it - this is a Byte Order Marker (BOM). 
 ```
@@ -206,9 +206,9 @@ UTF-8 encoding does not use BOM to determine byte order. The standard implies ad
 
 ### General information about UTF-32.
 
-The Unicode code points can also be encoded in UTF-32. This encoding always uses 4 bytes to represent any Unicode character. In other words, even the “E” character from the BMP in UTF-32 will look like 00000000 00000000 00000000 01000101. 
+Code points can also be encoded in UTF-32. This encoding always uses 4 bytes to represent any Unicode character. In other words, even the “E” character from the BMP in UTF-32 will look like `00000000 00000000 00000000 01000101`. 
 
-As you can see in this example, the first three bytes are “excess”. Hence the main disadvantage of the encoding is that the text will take up too much disc space. This is especially noticeable when working with BMP code points.
+As you can see in this example, the first three bytes are “excess”. Hence the main disadvantage of the encoding is that text will take up too much disc space. This is especially noticeable when working with BMP code points.
 
 The UTF-32 encoding must also have a BOM at the beginning of the text, and can be either Big Endian or Little Endian.
 
