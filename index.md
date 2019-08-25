@@ -12,13 +12,6 @@ Here you can find information about:
 Documents listed below:
 
 - [English version](pages/english.md)
-- [Русская версия документации](pages/russian.md)
-- [GitHub link to the document source](https://github.com/fedor1984/unicode)
-- [Google Docs page with English document](pages/project_site.html)
+- [Русская версия](pages/russian.md)
 
 ---
-
-You can contact me:  
-
-My email:   
-My phone:   
