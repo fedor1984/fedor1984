@@ -111,7 +111,7 @@ First you need to find out how many bytes are needed to encode the character. Th
 |00010000-0010FFFF|4                       |
   
 <br />
-As we already explained above, only one byte is required for the Latin letter E, because this code point is located in BMP. 
+We already know that only one byte is required for the Latin letter E, because this code point is located in BMP. 
 
 For the “tick ✓” symbol, 3 bytes are required, as it lies in the third range.
 
